@@ -1,0 +1,8 @@
+# Ignore PyTorch weight files
+*.pt
+*.pth
+
+# Ignore other model weight formats
+*.ckpt
+*.safetensors
+*.bin

@@ -1,0 +1,8 @@
+torch==2.11.0
+torchvision==0.26.0
+pydantic==2.13.3
+einops==0.8.2
+transformers==5.7.0
+diffusers==0.37.1
+lerobot==0.5.1
+foxglove-sdk==0.22.0

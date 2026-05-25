@@ -1,0 +1,98 @@
+seed: 42
+
+data:
+  dataset_dir: "../latent_steering_LeRobot"
+
+  past_window_size: 8
+  future_window_size: 8
+
+  sample_rate: 8
+
+model:
+  add_pos_embed: true
+  add_pad_embed: true
+  action_dim: 22
+  action_horizon: 8
+  noise_beta_alpha: 1.6
+  noise_beta_beta: 0.8
+
+  tune_vision_encoder: false
+  tune_attentive_pooler: true
+
+  vision_encoder_past_cfg:
+    model_name: "vit_large"
+    pretrained_path: "pretrained/vjepa2_1_vitl_dist_vitG_384.pt"
+    img_size: [384, 384]
+    num_frames: 8
+
+  vision_encoder_future_cfg:
+    model_name: "vit_large"
+    pretrained_path: "pretrained/vjepa2_1_vitl_dist_vitG_384.pt"
+    img_size: [384, 384]
+    num_frames: 8
+
+  attentive_pooler_past_cfg:
+    num_queries: 720
+    embed_dim: 1024
+    num_heads: 16
+    depth: 3
+
+  attentive_pooler_future_cfg:
+    num_queries: 180
+    embed_dim: 1024
+    num_heads: 16
+    depth: 3
+
+  multimodal_self_attention_cfg:
+    num_attention_heads: 16
+    num_layers: 4
+    dropout: 0.2
+    positional_embeddings: null
+
+  diffusion_model_cfg:
+    num_attention_heads: 16
+    output_dim: 1024
+    num_layers: 8
+    dropout: 0.2
+    positional_embeddings: null
+    interleave_self_attention: true
+
+training:
+  output_dir: "outputs"
+
+  num_epochs: 1
+
+  dataloader:
+    batch_size: 384
+    effective_batch_size: 768
+    num_workers: 16
+    prefetch_factor: 2
+
+  optimizer:
+    lr: 1.0e-4
+    weight_decay: 1.0e-5
+    betas: [0.9, 0.999]
+
+  scheduler:
+    type: "cosine"
+    warmup_ratio: 0.05
+
+  loss:
+    weights: [
+      1.000, 1.000, 1.225, 2.380, 1.000, 1.912, 2.622, 1.685, 1.801, 2.023, 1.673,
+      5.000, 5.000, 5.000, 5.000, 5.000, 5.000, 5.000, 5.000, 5.000, 5.000, 5.000,
+    ]
+
+  distributed:
+    reshard_after_forward: false
+
+  checkpoint:
+    num_steps: 250
+
+  gradient_checkpointing: true
+  gradient_clip: 1.0
+
+logging:
+  wandb:
+    project: "latent-steering-training"
+    entity: null
